@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { headers } from 'next/headers';
 import { FavoriteService } from '@/features/favorites/domain/service';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
     

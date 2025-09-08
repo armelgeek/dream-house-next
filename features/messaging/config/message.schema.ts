@@ -24,18 +24,18 @@ export interface Message {
     id: string;
     name: string;
     email: string;
-    image?: string;
+    image?: string | null;
   };
   recipient?: {
     id: string;
     name: string;
     email: string;
-    image?: string;
+    image?: string | null;
   };
   property?: {
     id: string;
     title: string;
-    images: string[];
+    images: string[] | null;
   };
 }
 
@@ -45,13 +45,13 @@ export interface Conversation {
     id: string;
     name: string;
     email: string;
-    image?: string;
+    image?: string | null;
   };
   lastMessage: Message;
   unreadCount: number;
   property?: {
     id: string;
     title: string;
-    images: string[];
+    images: string[] | null;
   };
 }

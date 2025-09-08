@@ -10,6 +10,8 @@ export class PropertyService {
       .values({
         ...data,
         price: data.price.toString(),
+        latitude: data.latitude?.toString(),
+        longitude: data.longitude?.toString(),
       })
       .returning();
 
@@ -113,9 +115,19 @@ export class PropertyService {
       .from(properties)
       .where(whereClause);
 
-    // Build order by
-    const orderColumn = properties[sortBy as keyof typeof properties];
-    const orderBy = sortOrder === 'asc' ? asc(orderColumn) : desc(orderColumn);
+    // Build order by with type safety
+    let orderBy;
+    if (sortBy === 'created_at') {
+      orderBy = sortOrder === 'asc' ? asc(properties.createdAt) : desc(properties.createdAt);
+    } else if (sortBy === 'price') {
+      orderBy = sortOrder === 'asc' ? asc(properties.price) : desc(properties.price);
+    } else if (sortBy === 'size') {
+      orderBy = sortOrder === 'asc' ? asc(properties.size) : desc(properties.size);
+    } else if (sortBy === 'view_count') {
+      orderBy = sortOrder === 'asc' ? asc(properties.viewCount) : desc(properties.viewCount);
+    } else {
+      orderBy = desc(properties.createdAt); // default
+    }
 
     // Get paginated results
     const offset = (page - 1) * limit;
@@ -173,9 +185,15 @@ export class PropertyService {
   }
 
   static async update(id: string, data: UpdateProperty, ownerId: string): Promise<Property | null> {
-    const updateData = { ...data };
+    const updateData: any = { ...data };
     if (data.price !== undefined) {
       updateData.price = data.price.toString();
+    }
+    if (data.latitude !== undefined) {
+      updateData.latitude = data.latitude?.toString();
+    }
+    if (data.longitude !== undefined) {
+      updateData.longitude = data.longitude?.toString();
     }
 
     const [property] = await db
