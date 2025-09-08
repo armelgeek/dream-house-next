@@ -4,6 +4,7 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { PropertyTypeBadge } from '@/features/properties/components/atoms/property-type-badge';
+import { FavoriteButton } from '@/features/favorites/components/atoms/favorite-button';
 import { useProperty } from '@/features/properties/hooks/use-property';
 
 export default function PropertyDetailPage() {
@@ -105,13 +106,11 @@ export default function PropertyDetailPage() {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-4">
                 <PropertyTypeBadge type={property.type} />
-                {property.isFavorited && (
-                  <span className="text-red-500">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                    </svg>
-                  </span>
-                )}
+                <FavoriteButton
+                  propertyId={property.id}
+                  isFavorited={property.isFavorited || false}
+                  size="sm"
+                />
               </div>
               
               <h1 className="text-3xl font-bold text-gray-900 mb-2">{property.title}</h1>
@@ -219,15 +218,16 @@ export default function PropertyDetailPage() {
 
             {/* Favorite Button */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">
-              <button 
-                className={`w-full py-3 rounded-lg font-semibold transition ${
-                  property.isFavorited 
-                    ? 'bg-red-100 text-red-700 hover:bg-red-200' 
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {property.isFavorited ? '❤️ Remove from Favorites' : '🤍 Add to Favorites'}
-              </button>
+              <div className="flex justify-center">
+                <FavoriteButton
+                  propertyId={property.id}
+                  isFavorited={property.isFavorited || false}
+                  size="lg"
+                />
+              </div>
+              <p className="text-center text-sm text-gray-500 mt-2">
+                {property.isFavorited ? 'Saved to favorites' : 'Save to favorites'}
+              </p>
             </div>
           </div>
         </div>
