@@ -2,6 +2,7 @@ import React from 'react';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import SearchInput from '@/components/ui/search-input';
 import { UserNav } from './user-nav';
+import { MessageNotification } from '@/features/messaging/components/atoms/message-notification';
 
 export default async function Header() {
   return (
@@ -16,6 +17,7 @@ export default async function Header() {
         <div className='hidden md:flex'>
           <SearchInput />
         </div>
+        <MessageNotification />
         <UserNav />
       </div>
     </header>
