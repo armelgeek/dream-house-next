@@ -59,7 +59,7 @@ function Calendar({
   );
 
   const defaultComponents = {
-    Chevron: (props: any) => {
+    Chevron: (props: { orientation?: string; [key: string]: unknown }) => {
       if (props.orientation === 'left') {
         return (
           <ChevronLeft
