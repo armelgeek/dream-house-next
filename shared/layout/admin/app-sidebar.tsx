@@ -43,10 +43,27 @@ import * as React from 'react';
 import { kAppAbbr, kAppName, navItems } from '@/shared/lib/constants/app.constant';
 import { Icons } from '@/components/ui/icons';
 import { authClient } from '@/auth-client';
-import { Session } from 'better-auth';
 
+type SessionData = {
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image?: string | null;
+  };
+  session: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string;
+    expiresAt: Date;
+    token: string;
+    ipAddress?: string | null;
+    userAgent?: string | null;
+  };
+};
 
-export default function AppSidebar({ session }: { session: Session }) {
+export default function AppSidebar({ session }: { session: SessionData }) {
   const router = useRouter();
   const pathname = usePathname();
   //const { state, isMobile } = useSidebar();

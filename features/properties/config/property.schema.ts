@@ -97,7 +97,7 @@ export interface Property {
     id: string;
     name: string;
     email: string;
-    image?: string;
+    image?: string | null;
   };
   isFavorited?: boolean;
 }
@@ -107,6 +107,6 @@ export interface PropertyWithOwner extends Property {
     id: string;
     name: string;
     email: string;
-    image?: string;
+    image?: string | null;
   };
 }

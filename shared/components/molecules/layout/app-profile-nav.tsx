@@ -9,11 +9,14 @@ import {
   ShoppingBag,
   Heart,
   Trash,
-  LogOut
+  LogOut,
+  MessageSquare,
+  Home
 } from 'lucide-react';
 import SignOutButton from '../../atoms/signout-button';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
 const NavItem = ({ href, icon, children, active, className = '' }: { href: string; icon: string; children: ReactNode; active: boolean; className?: string }) => {
   const baseClasses = "flex items-center w-full px-4 py-2 text-sm hover:bg-gray-100 rounded-md";
   const activeClasses = active ? "bg-gray-200 text-gray-800" : "";
@@ -42,22 +45,39 @@ const getIcon = (name: string) => {
     "shopping-bag": <ShoppingBag size={18}/>,
     heart: <Heart size={18}/>,
     trash: <Trash size={18}/>,
-    logout: <LogOut size={18}/>
+    logout: <LogOut size={18}/>,
+    "message-square": <MessageSquare size={18}/>,
+    home: <Home size={18}/>
   };
   
   return icons[name as keyof typeof icons] || null;
 };
+
 const AppProfileNav = () => {
     const pathname = usePathname();
-    return (<div>
-        <ul>
-            <NavItem href="/account" icon="user" active={pathname === '/account'}>
-                My profile
-            </NavItem>
+    return (
+        <div>
+            <ul className="space-y-1">
+                <NavItem href="/account" icon="user" active={pathname === '/account'}>
+                    My profile
+                </NavItem>
+                
+                <NavItem href="/dashboard/properties" icon="home" active={pathname === '/dashboard/properties'}>
+                    My Properties
+                </NavItem>
+                
+                <NavItem href="/dashboard/favorites" icon="heart" active={pathname === '/dashboard/favorites'}>
+                    Favorites
+                </NavItem>
+                
+                <NavItem href="/dashboard/messages" icon="message-square" active={pathname === '/dashboard/messages'}>
+                    Messages
+                </NavItem>
 
-            <SignOutButton active={false}/>
-        </ul>
-    </div>);
+                <SignOutButton active={false}/>
+            </ul>
+        </div>
+    );
 };
 
 export default AppProfileNav;

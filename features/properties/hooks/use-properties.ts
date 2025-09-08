@@ -17,7 +17,7 @@ interface UsePropertiesResult {
   refetch: () => void;
 }
 
-export function useProperties(filters: PropertySearch = {}): UsePropertiesResult {
+export function useProperties(filters: Partial<PropertySearch> = {}): UsePropertiesResult {
   const [properties, setProperties] = useState<PropertyWithOwner[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

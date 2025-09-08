@@ -1,6 +1,7 @@
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
+import { Path } from 'react-hook-form';
 import { ControlledTextInput } from './form/ControlledTextInput';
 import { ControlledTextareaInput } from './form/ControlledTextareaInput';
 import { ControlledSwitch } from './form/ControlledSwitch';
@@ -35,7 +36,7 @@ export const GenericForm = <T extends Record<string, any>>({
         return (
           <ControlledTextInput
             key={field.name}
-            name={field.name}
+            name={field.name as Path<T>}
             label={field.label}
             placeholder={field.placeholder}
             control={form.control}
@@ -45,7 +46,7 @@ export const GenericForm = <T extends Record<string, any>>({
         return (
           <ControlledTextareaInput
             key={field.name}
-            name={field.name}
+            name={field.name as Path<T>}
             label={field.label}
             placeholder={field.placeholder}
             control={form.control}
@@ -56,7 +57,7 @@ export const GenericForm = <T extends Record<string, any>>({
           <ControlledSwitch
             key={field.name}
             control={form.control}
-            name={field.name}
+            name={field.name as Path<T>}
             label={field.label}
             activeValue={field.activeValue}
             inactiveValue={field.inactiveValue}
@@ -67,7 +68,7 @@ export const GenericForm = <T extends Record<string, any>>({
           <ControlledUpload
             key={field.name}
             control={form.control}
-            name={field.name}
+            name={field.name as Path<T>}
             label={field.label}
             description={field.description}
           />
