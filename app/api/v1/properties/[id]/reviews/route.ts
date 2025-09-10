@@ -7,10 +7,10 @@ import { createReviewRequestSchema } from '@/features/reviews/config/review.sche
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const propertyId = params.id;
+    const { id: propertyId } = await params;
     const { searchParams } = new URL(request.url);
     const includeStats = searchParams.get('includeStats') === 'true';
 
@@ -36,7 +36,7 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -48,7 +48,7 @@ export async function POST(
       );
     }
 
-    const propertyId = params.id;
+    const { id: propertyId } = await params;
     const body = await request.json();
     const validatedData = createReviewRequestSchema.parse({
       ...body,

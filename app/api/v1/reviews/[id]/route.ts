@@ -7,7 +7,7 @@ import { updateReviewSchema } from '@/features/reviews/config/review.schema';
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -19,7 +19,7 @@ export async function PUT(
       );
     }
 
-    const reviewId = params.id;
+    const { id: reviewId } = await params;
     const body = await request.json();
     const validatedData = updateReviewSchema.parse(body);
     
@@ -54,7 +54,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
@@ -66,7 +66,7 @@ export async function DELETE(
       );
     }
 
-    const reviewId = params.id;
+    const { id: reviewId } = await params;
     const deleted = await ReviewService.delete(reviewId, session.user.id);
     
     if (!deleted) {
