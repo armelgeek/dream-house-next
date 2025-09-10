@@ -5,10 +5,11 @@ import { AdminService } from '@/features/admin/domain/service';
 import { userModerationSchema } from '@/features/admin/config/admin.schema';
 
 // Helper function to check if user is admin (basic implementation)
-async function isAdmin(_userId: string): Promise<boolean> {
+async function isAdmin(userId: string): Promise<boolean> {
   // TODO: Implement proper admin role checking
   // For now, you can hardcode admin user IDs or implement a role system
   // This is a basic implementation that should be replaced with proper role management
+  console.log(`Checking admin status for user: ${userId}`);
   return true; // Temporary: allow all authenticated users as admin for testing
 }
 

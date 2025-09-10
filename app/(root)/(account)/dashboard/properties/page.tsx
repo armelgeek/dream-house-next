@@ -5,33 +5,59 @@ import Link from 'next/link';
 import axios from 'axios';
 import { PropertyCard } from '@/features/properties/components/molecules/property-card';
 import type { Property, PropertyWithOwner } from '@/features/properties/config/property.schema';
+import { toast } from 'sonner';
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deletingPropertyId, setDeletingPropertyId] = useState<string | null>(null);
+
+  const fetchMyProperties = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // For now, we'll use the regular properties API and filter on the server side
+      // In a real app, we'd create a dedicated endpoint for user's properties
+      const response = await axios.get('/api/v1/properties?owner=me');
+      setProperties(response.data.items || []);
+    } catch (err) {
+      if (axios.isAxiosError(err) && err.response?.status === 401) {
+        setError('Please sign in to view your properties');
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to fetch properties');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteProperty = async (propertyId: string) => {
+    if (!confirm('Are you sure you want to delete this property? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      setDeletingPropertyId(propertyId);
+      await axios.delete(`/api/v1/properties/${propertyId}`);
+      
+      // Remove the property from the local state
+      setProperties(prev => prev.filter(property => property.id !== propertyId));
+      toast.success('Property deleted successfully');
+    } catch (error) {
+      console.error('Error deleting property:', error);
+      if (axios.isAxiosError(error) && error.response?.data?.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error('Failed to delete property');
+      }
+    } finally {
+      setDeletingPropertyId(null);
+    }
+  };
 
   useEffect(() => {
-    const fetchMyProperties = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // For now, we'll use the regular properties API and filter on the server side
-        // In a real app, we'd create a dedicated endpoint for user's properties
-        const response = await axios.get('/api/v1/properties?owner=me');
-        setProperties(response.data.items || []);
-      } catch (err) {
-        if (axios.isAxiosError(err) && err.response?.status === 401) {
-          setError('Please sign in to view your properties');
-        } else {
-          setError(err instanceof Error ? err.message : 'Failed to fetch properties');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchMyProperties();
   }, []);
 
@@ -110,8 +136,12 @@ export default function PropertiesPage() {
                     >
                       ✏️
                     </Link>
-                    <button className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition">
-                      🗑️
+                    <button 
+                      onClick={() => handleDeleteProperty(property.id)}
+                      disabled={deletingPropertyId === property.id}
+                      className="bg-red-600 text-white p-2 rounded-full hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {deletingPropertyId === property.id ? '⏳' : '🗑️'}
                     </button>
                   </div>
                 </div>
