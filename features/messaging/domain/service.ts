@@ -67,7 +67,7 @@ export class MessageService {
         or(eq(messages.senderId, userId), eq(messages.recipientId, userId))
       )
       .groupBy(
-        sql`CASE 
+        sql<string>`CASE 
           WHEN ${messages.senderId} = ${userId} THEN ${messages.recipientId}
           ELSE ${messages.senderId}
         END`,

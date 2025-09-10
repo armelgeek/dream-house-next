@@ -3,6 +3,7 @@ export {
   properties, 
   favorites, 
   messages, 
+  reviews,
   propertyTypeEnum, 
   propertyStatusEnum 
 } from './properties';

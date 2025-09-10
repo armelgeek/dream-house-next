@@ -73,3 +73,20 @@ export const messages = pgTable('messages', {
   createdAt: timestamp('created_at').notNull().default(sql`now()`),
   updatedAt: timestamp('updated_at').notNull().default(sql`now()`),
 });
+
+export const reviews = pgTable('reviews', {
+  id: text('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  propertyId: text('property_id')
+    .notNull()
+    .references(() => properties.id, { onDelete: 'cascade' }),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  rating: integer('rating').notNull(), // 1-5 stars
+  comment: text('comment'),
+  isVerified: boolean('is_verified').notNull().default(false), // if the user actually visited/bought the property
+  createdAt: timestamp('created_at').notNull().default(sql`now()`),
+  updatedAt: timestamp('updated_at').notNull().default(sql`now()`),
+});
