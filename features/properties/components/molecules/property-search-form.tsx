@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { PropertyTypeFilter } from '../atoms/property-type-filter';
+import { TransactionTypeFilter } from '../atoms/transaction-type-filter';
 import { PriceRangeFilter } from '../atoms/price-range-filter';
-import type { PropertySearch, PropertyType } from '../../config/property.schema';
+import type { PropertySearch, PropertyType, TransactionType } from '../../config/property.schema';
 
 interface PropertySearchFormProps {
   onSearch: (filters: PropertySearch) => void;
@@ -17,6 +18,7 @@ export const PropertySearchForm: React.FC<PropertySearchFormProps> = ({
   const [filters, setFilters] = useState<Partial<PropertySearch>>({
     query: '',
     type: undefined,
+    transactionType: undefined,
     minPrice: undefined,
     maxPrice: undefined,
     bedrooms: undefined,
@@ -34,6 +36,7 @@ export const PropertySearchForm: React.FC<PropertySearchFormProps> = ({
     const resetFilters = {
       query: '',
       type: undefined,
+      transactionType: undefined,
       minPrice: undefined,
       maxPrice: undefined,
       bedrooms: undefined,
@@ -80,6 +83,17 @@ export const PropertySearchForm: React.FC<PropertySearchFormProps> = ({
           value={filters.type}
           onChange={(type) => setFilters({ ...filters, type })}
         />
+
+        {/* Transaction Type */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Transaction Type
+          </label>
+          <TransactionTypeFilter
+            selectedTransactionType={filters.transactionType}
+            onTransactionTypeChange={(transactionType) => setFilters({ ...filters, transactionType })}
+          />
+        </div>
 
         {/* Price Range */}
         <div className="md:col-span-2">

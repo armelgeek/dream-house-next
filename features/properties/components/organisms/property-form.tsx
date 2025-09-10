@@ -67,6 +67,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
       longitude: initialData?.longitude ? parseFloat(initialData.longitude) : undefined,
       type: initialData?.type || 'apartment',
       status: initialData?.status || 'draft',
+      transactionType: initialData?.transactionType || 'buy',
       images: initialData?.images || [],
       features: initialData?.features || [],
     },
@@ -76,6 +77,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
   const { register, watch, setValue } = form;
   const watchedType = watch('type');
   const watchedStatus = watch('status');
+  const watchedTransactionType = watch('transactionType');
 
   return (
     <div className="container mx-auto p-6 max-w-4xl">
@@ -135,7 +137,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <Label>Property Type *</Label>
                   <Select
@@ -154,6 +156,26 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                   {errors.type && (
                     <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label>Transaction Type *</Label>
+                  <Select
+                    value={watchedTransactionType}
+                    onValueChange={(value) => setValue('transactionType', value as any)}
+                  >
+                    <SelectTrigger className={errors.transactionType ? 'border-red-500' : ''}>
+                      <SelectValue placeholder="Select transaction type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="buy">Buy</SelectItem>
+                      <SelectItem value="sell">Sell</SelectItem>
+                      <SelectItem value="rent">Rent</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {errors.transactionType && (
+                    <p className="text-red-500 text-sm mt-1">{errors.transactionType.message}</p>
                   )}
                 </div>
 
