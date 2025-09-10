@@ -59,7 +59,7 @@ export const navItems: NavItem[] = [
   {
     title: 'Properties',
     url: '/d/dashboard/properties',
-    icon: 'home',
+    icon: 'dashboard',
     isActive: false,
     items: []
   }

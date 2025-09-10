@@ -43,6 +43,7 @@ export class AdminService {
       propertyCount,
       messageCount: 0, // TODO: Implement when message counting is added
       isSuspended: false, // TODO: Implement suspension logic
+      isEmailVerified: user.emailVerified, // Map emailVerified to isEmailVerified
     }));
 
     return {
