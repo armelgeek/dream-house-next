@@ -8,6 +8,9 @@ export const propertyTypeEnum = pgEnum('property_type', ['apartment', 'house', '
 // Property status enum  
 export const propertyStatusEnum = pgEnum('property_status', ['available', 'sold', 'rented', 'draft']);
 
+// Transaction type enum
+export const transactionTypeEnum = pgEnum('transaction_type', ['buy', 'sell', 'rent']);
+
 export const properties = pgTable('properties', {
   id: text('id')
     .primaryKey()
@@ -28,6 +31,7 @@ export const properties = pgTable('properties', {
   longitude: decimal('longitude', { precision: 11, scale: 8 }),
   type: propertyTypeEnum('type').notNull(),
   status: propertyStatusEnum('status').notNull().default('draft'),
+  transactionType: transactionTypeEnum('transaction_type').notNull(),
   images: json('images').$type<string[]>().default([]), // Array of image URLs
   features: json('features').$type<string[]>().default([]), // Array of feature strings
   isActive: boolean('is_active').notNull().default(true),

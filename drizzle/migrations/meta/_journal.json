@@ -8,6 +8,13 @@
       "when": 1757359495569,
       "tag": "0000_dark_chameleon",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1757538520916,
+      "tag": "0001_clear_rhino",
+      "breakpoints": true
     }
   ]
 }
