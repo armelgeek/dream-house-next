@@ -15,6 +15,13 @@
       "when": 1757538520916,
       "tag": "0001_clear_rhino",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1757541628623,
+      "tag": "0002_glossy_lester",
+      "breakpoints": true
     }
   ]
 }

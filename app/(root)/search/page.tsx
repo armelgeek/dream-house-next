@@ -4,12 +4,14 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { PropertySearchForm } from '@/features/properties/components/molecules/property-search-form';
 import { PropertyList } from '@/features/properties/components/organisms/property-list';
+import { ViewToggle, type ViewMode } from '@/features/properties/components/atoms/view-toggle';
 import { useProperties } from '@/features/properties/hooks/use-properties';
 import type { PropertySearch, PropertyType } from '@/features/properties/config/property.schema';
 
 export default function SearchPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [viewMode, setViewMode] = useState<ViewMode>('grid');
   
   // Initialize filters from URL params
   const [filters, setFilters] = useState<PropertySearch>(() => {
@@ -42,9 +44,17 @@ export default function SearchPage() {
     return initialFilters;
   });
 
+  // Initialize view mode from URL
+  useEffect(() => {
+    const view = searchParams.get('view') as ViewMode;
+    if (view && ['grid', 'list', 'map'].includes(view)) {
+      setViewMode(view);
+    }
+  }, [searchParams]);
+
   const { properties, loading, error, pagination } = useProperties(filters);
 
-  // Update URL when filters change
+  // Update URL when filters or view mode change
   useEffect(() => {
     const params = new URLSearchParams();
     
@@ -54,11 +64,15 @@ export default function SearchPage() {
       }
     });
     
+    if (viewMode !== 'grid') {
+      params.set('view', viewMode);
+    }
+    
     const newUrl = `/search?${params.toString()}`;
     if (window.location.pathname + window.location.search !== newUrl) {
       router.replace(newUrl, { scroll: false });
     }
-  }, [filters, router]);
+  }, [filters, viewMode, router]);
 
   const handleSearch = (newFilters: PropertySearch) => {
     setFilters({ ...newFilters, page: 1 }); // Reset to page 1 on new search
@@ -67,6 +81,10 @@ export default function SearchPage() {
   const handlePageChange = (page: number) => {
     setFilters({ ...filters, page });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleViewChange = (mode: ViewMode) => {
+    setViewMode(mode);
   };
 
   return (
@@ -86,32 +104,41 @@ export default function SearchPage() {
 
         {/* Results Header */}
         {pagination && (
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
             <p className="text-gray-600">
               Showing {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} properties
             </p>
-            <div className="flex items-center space-x-2">
-              <label className="text-sm text-gray-600">Sort by:</label>
-              <select
-                value={`${filters.sortBy}-${filters.sortOrder}`}
-                onChange={(e) => {
-                  const [sortBy, sortOrder] = e.target.value.split('-');
-                  setFilters({ 
-                    ...filters, 
-                    sortBy: sortBy as 'price' | 'size' | 'created_at' | 'view_count', 
-                    sortOrder: sortOrder as 'asc' | 'desc', 
-                    page: 1 
-                  });
-                }}
-                className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-black focus:border-black"
-              >
-                <option value="created_at-desc">Newest First</option>
-                <option value="created_at-asc">Oldest First</option>
-                <option value="price-asc">Price: Low to High</option>
-                <option value="price-desc">Price: High to Low</option>
-                <option value="size-desc">Size: Largest First</option>
-                <option value="view_count-desc">Most Popular</option>
-              </select>
+            
+            <div className="flex items-center gap-4">
+              {/* View Toggle */}
+              <ViewToggle viewMode={viewMode} onViewChange={handleViewChange} />
+              
+              {/* Sort Dropdown - Hide in map view */}
+              {viewMode !== 'map' && (
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm text-gray-600">Sort by:</label>
+                  <select
+                    value={`${filters.sortBy}-${filters.sortOrder}`}
+                    onChange={(e) => {
+                      const [sortBy, sortOrder] = e.target.value.split('-');
+                      setFilters({ 
+                        ...filters, 
+                        sortBy: sortBy as 'price' | 'size' | 'created_at' | 'view_count', 
+                        sortOrder: sortOrder as 'asc' | 'desc', 
+                        page: 1 
+                      });
+                    }}
+                    className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-black focus:border-black"
+                  >
+                    <option value="created_at-desc">Newest First</option>
+                    <option value="created_at-asc">Oldest First</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                    <option value="size-desc">Size: Largest First</option>
+                    <option value="view_count-desc">Most Popular</option>
+                  </select>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -130,12 +157,13 @@ export default function SearchPage() {
           <PropertyList 
             properties={properties} 
             loading={loading}
+            viewMode={viewMode}
             className="mb-8"
           />
         )}
 
-        {/* Pagination */}
-        {pagination && pagination.totalPages > 1 && (
+        {/* Pagination - Hide in map view */}
+        {viewMode !== 'map' && pagination && pagination.totalPages > 1 && (
           <div className="flex justify-center items-center space-x-2">
             <button
               onClick={() => handlePageChange(pagination.page - 1)}

@@ -9,6 +9,7 @@ import { FavoriteButton } from '@/features/favorites/components/atoms/favorite-b
 import { PropertyImageGallery } from '@/features/properties/components/molecules/property-image-gallery';
 import { PropertyMap } from '@/features/properties/components/molecules/property-map';
 import { PropertyContact } from '@/features/properties/components/molecules/property-contact';
+import { PropertyReviews } from '@/features/reviews/components/organisms/property-reviews';
 import { useProperty } from '@/features/properties/hooks/use-property';
 
 export default function PropertyDetailPage() {
@@ -164,6 +165,11 @@ export default function PropertyDetailPage() {
                 title={property.title}
                 height="h-80"
               />
+            </div>
+
+            {/* Reviews Section */}
+            <div className="mb-6">
+              <PropertyReviews propertyId={property.id} />
             </div>
           </div>
 
