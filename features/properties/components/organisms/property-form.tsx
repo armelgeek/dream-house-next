@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useFormHandler } from '@/shared/hooks/use-form-handler';
 import { createPropertySchema, updatePropertySchema, type CreateProperty, type Property } from '../../config/property.schema';
+import { PropertyImageUpload } from '../atoms/property-image-upload';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -323,6 +324,20 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Property Images */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Property Images</h3>
+              <PropertyImageUpload
+                name="images"
+                control={form.control}
+                description="Upload high-quality images of your property. The first image will be the main photo."
+                maxImages={10}
+                onUploadComplete={(urls) => {
+                  console.log('Uploaded images:', urls);
+                }}
+              />
             </div>
 
             {/* Form Actions */}
