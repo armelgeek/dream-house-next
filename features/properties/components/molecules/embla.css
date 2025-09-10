@@ -1,0 +1,13 @@
+/* Embla Carousel styles */
+.embla {
+  position: relative;
+}
+
+.embla__container {
+  display: flex;
+}
+
+.embla__slide {
+  position: relative;
+  min-width: 0;
+}

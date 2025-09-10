@@ -1,7 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { PropertyTypeBadge } from '../atoms/property-type-badge';
+import { TransactionTypeBadge } from '../atoms/transaction-type-badge';
 import { FavoriteButton } from '@/features/favorites/components/atoms/favorite-button';
+import { PropertyImageGallery } from './property-image-gallery';
 import type { PropertyWithOwner } from '../../config/property.schema';
 
 interface PropertyCardProps {
@@ -26,13 +28,17 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
     <div className={`bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow ${className}`}>
       <Link href={`/properties/${property.id}`}>
         <div className="relative">
-          <img
-            src={primaryImage}
-            alt={property.title}
-            className="w-full h-48 object-cover"
+          <PropertyImageGallery 
+            images={property.images}
+            title={property.title}
+            variant="grid"
+            className="h-48"
           />
-          <div className="absolute top-2 left-2">
+          <div className="absolute top-2 left-2 flex gap-2">
             <PropertyTypeBadge type={property.type} />
+            {property.transactionType && (
+              <TransactionTypeBadge transactionType={property.transactionType} />
+            )}
           </div>
           <div className="absolute top-2 right-2">
             <FavoriteButton

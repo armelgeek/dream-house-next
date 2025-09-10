@@ -4,7 +4,11 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { PropertyTypeBadge } from '@/features/properties/components/atoms/property-type-badge';
+import { TransactionTypeBadge } from '@/features/properties/components/atoms/transaction-type-badge';
 import { FavoriteButton } from '@/features/favorites/components/atoms/favorite-button';
+import { PropertyImageGallery } from '@/features/properties/components/molecules/property-image-gallery';
+import { PropertyMap } from '@/features/properties/components/molecules/property-map';
+import { PropertyContact } from '@/features/properties/components/molecules/property-contact';
 import { useProperty } from '@/features/properties/hooks/use-property';
 
 export default function PropertyDetailPage() {
@@ -58,8 +62,6 @@ export default function PropertyDetailPage() {
     }).format(Number(price));
   };
 
-  const primaryImage = property.images?.[0] || '/placeholder-property.jpg';
-
   return (
     <div className="py-8 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
@@ -71,34 +73,12 @@ export default function PropertyDetailPage() {
         </div>
 
         {/* Image Gallery */}
-        <div className="mb-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            <div className="lg:col-span-3">
-              <img
-                src={primaryImage}
-                alt={property.title}
-                className="w-full h-96 object-cover rounded-lg"
-              />
-            </div>
-            {property.images.length > 1 && (
-              <div className="space-y-4">
-                {property.images.slice(1, 4).map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`${property.title} ${index + 2}`}
-                    className="w-full h-28 object-cover rounded-lg"
-                  />
-                ))}
-                {property.images.length > 4 && (
-                  <div className="w-full h-28 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
-                    +{property.images.length - 4} more
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+        <PropertyImageGallery 
+          images={property.images}
+          title={property.title}
+          variant="hero"
+          className="mb-8"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -106,6 +86,9 @@ export default function PropertyDetailPage() {
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-4">
                 <PropertyTypeBadge type={property.type} />
+                {property.transactionType && (
+                  <TransactionTypeBadge transactionType={property.transactionType} showIcon />
+                )}
                 <FavoriteButton
                   propertyId={property.id}
                   isFavorited={property.isFavorited || false}
@@ -172,49 +155,22 @@ export default function PropertyDetailPage() {
               </div>
             )}
 
-            {/* Map placeholder */}
+            {/* Location & Map */}
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-4">Location</h3>
-              <div className="bg-gray-100 h-64 rounded-lg flex items-center justify-center text-gray-500">
-                🗺️ Interactive map would be here
-                <br />
-                <small>Integration with Google Maps coming soon</small>
-              </div>
+              <PropertyMap
+                latitude={property.latitude}
+                longitude={property.longitude}
+                address={property.address || property.location}
+                title={property.title}
+                height="h-80"
+              />
             </div>
           </div>
 
           {/* Sidebar */}
-          <div>
+          <div className="space-y-6">
             {/* Contact Owner */}
-            <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-4">Contact Owner</h3>
-              
-              <div className="flex items-center mb-4">
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mr-3">
-                  {property.owner.image ? (
-                    <img 
-                      src={property.owner.image} 
-                      alt={property.owner.name}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-gray-500 text-xl">👤</span>
-                  )}
-                </div>
-                <div>
-                  <div className="font-semibold">{property.owner.name}</div>
-                  <div className="text-sm text-gray-500">Property Owner</div>
-                </div>
-              </div>
-
-              <button className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition mb-3">
-                💬 Send Message
-              </button>
-              
-              <button className="w-full border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition">
-                📞 Request Call
-              </button>
-            </div>
+            <PropertyContact property={property} />
 
             {/* Favorite Button */}
             <div className="bg-white border border-gray-200 rounded-lg p-6">

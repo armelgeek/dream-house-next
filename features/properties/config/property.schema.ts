@@ -15,8 +15,15 @@ export const PropertyStatus = {
   DRAFT: 'draft'
 } as const;
 
+export const TransactionType = {
+  BUY: 'buy',
+  SELL: 'sell',
+  RENT: 'rent'
+} as const;
+
 export type PropertyType = typeof PropertyType[keyof typeof PropertyType];
 export type PropertyStatus = typeof PropertyStatus[keyof typeof PropertyStatus];
+export type TransactionType = typeof TransactionType[keyof typeof TransactionType];
 
 // Property creation schema
 export const createPropertySchema = z.object({
@@ -36,6 +43,7 @@ export const createPropertySchema = z.object({
   longitude: z.number().optional(),
   type: z.enum(['apartment', 'house', 'land', 'commercial']),
   status: z.enum(['available', 'sold', 'rented', 'draft']).default('draft'),
+  transactionType: z.enum(['buy', 'sell', 'rent']),
   images: z.array(z.string()).default([]),
   features: z.array(z.string()).default([]),
 });
@@ -47,6 +55,7 @@ export const updatePropertySchema = createPropertySchema.partial();
 export const propertySearchSchema = z.object({
   query: z.string().optional(),
   type: z.enum(['apartment', 'house', 'land', 'commercial']).optional(),
+  transactionType: z.enum(['buy', 'sell', 'rent']).optional(),
   minPrice: z.number().optional(),
   maxPrice: z.number().optional(),
   minSize: z.number().optional(),
@@ -85,6 +94,7 @@ export interface Property {
   longitude?: string;
   type: PropertyType;
   status: PropertyStatus;
+  transactionType: TransactionType;
   images: string[];
   features: string[];
   isActive: boolean;
