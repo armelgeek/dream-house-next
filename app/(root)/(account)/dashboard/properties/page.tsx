@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import { PropertyCard } from '@/features/properties/components/molecules/property-card';
-import type { Property, PropertyWithOwner } from '@/features/properties/config/property.schema';
+import { PropertyStatusSelector } from '@/features/properties/components/atoms/property-status-selector';
+import type { Property, PropertyWithOwner, PropertyStatus } from '@/features/properties/config/property.schema';
 import { toast } from 'sonner';
 
 export default function PropertiesPage() {
@@ -31,6 +32,17 @@ export default function PropertiesPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleStatusChange = (propertyId: string, newStatus: PropertyStatus) => {
+    // Update the local state to reflect the change
+    setProperties(prev => 
+      prev.map(property => 
+        property.id === propertyId 
+          ? { ...property, status: newStatus }
+          : property
+      )
+    );
   };
 
   const handleDeleteProperty = async (propertyId: string) => {
@@ -129,6 +141,17 @@ export default function PropertiesPage() {
               {properties.map((property) => (
                 <div key={property.id} className="relative">
                   <PropertyCard property={property as PropertyWithOwner} />
+                  
+                  {/* Status Selector - positioned at the bottom left of the card */}
+                  <div className="absolute bottom-4 left-4">
+                    <PropertyStatusSelector
+                      propertyId={property.id}
+                      currentStatus={property.status}
+                      onStatusChange={(newStatus) => handleStatusChange(property.id, newStatus)}
+                    />
+                  </div>
+                  
+                  {/* Action buttons - positioned at the top right */}
                   <div className="absolute top-2 right-2 flex space-x-2">
                     <Link
                       href={`/dashboard/properties/${property.id}/edit`}
