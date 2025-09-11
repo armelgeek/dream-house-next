@@ -53,9 +53,9 @@ export class MessageService {
   }
 
   static async getConversations(userId: string): Promise<Conversation[]> {
-    // Get all unique conversation partners
+    // Get all unique conversation partners with their property IDs
     const conversationPartners = await db
-      .select({
+      .selectDistinct({
         participantId: sql<string>`CASE 
           WHEN ${messages.senderId} = ${userId} THEN ${messages.recipientId}
           ELSE ${messages.senderId}
@@ -65,13 +65,6 @@ export class MessageService {
       .from(messages)
       .where(
         or(eq(messages.senderId, userId), eq(messages.recipientId, userId))
-      )
-      .groupBy(
-        sql<string>`CASE 
-          WHEN ${messages.senderId} = ${userId} THEN ${messages.recipientId}
-          ELSE ${messages.senderId}
-        END`,
-        messages.propertyId
       );
 
     const conversations: Conversation[] = [];
@@ -88,10 +81,10 @@ export class MessageService {
             image: users.image,
           },
           participant: {
-            id: users.id,
-            name: users.name,
-            email: users.email,
-            image: users.image,
+            id: sql<string>`participant.id`,
+            name: sql<string>`participant.name`,
+            email: sql<string>`participant.email`,
+            image: sql<string>`participant.image`,
           },
           property: {
             id: properties.id,
@@ -112,14 +105,14 @@ export class MessageService {
               and(eq(messages.senderId, userId), eq(messages.recipientId, partner.participantId)),
               and(eq(messages.senderId, partner.participantId), eq(messages.recipientId, userId))
             ),
-            partner.propertyId ? eq(messages.propertyId, partner.propertyId) : sql`1=1`
+            partner.propertyId ? eq(messages.propertyId, partner.propertyId) : sql`TRUE`
           )
         )
         .orderBy(desc(messages.createdAt))
         .limit(1);
 
       // Get unread count
-      const [{ unreadCount }] = await db
+      const [unreadResult] = await db
         .select({ unreadCount: count() })
         .from(messages)
         .where(
@@ -127,15 +120,22 @@ export class MessageService {
             eq(messages.recipientId, userId),
             eq(messages.senderId, partner.participantId),
             eq(messages.isRead, false),
-            partner.propertyId ? eq(messages.propertyId, partner.propertyId) : sql`1=1`
+            partner.propertyId ? eq(messages.propertyId, partner.propertyId) : sql`TRUE`
           )
         );
+
+      const unreadCount = unreadResult?.unreadCount || 0;
 
       if (lastMessageQuery[0]) {
         const { message, sender, participant, property } = lastMessageQuery[0];
         conversations.push({
           participantId: partner.participantId,
-          participant: participant!,
+          participant: {
+            id: participant.id,
+            name: participant.name,
+            email: participant.email,
+            image: participant.image,
+          },
           lastMessage: {
             ...this.mapToMessage(message),
             sender: sender!,
@@ -164,14 +164,14 @@ export class MessageService {
   }
 
   static async getUnreadCount(userId: string): Promise<number> {
-    const [{ count: unreadCount }] = await db
+    const [result] = await db
       .select({ count: count() })
       .from(messages)
       .where(
         and(eq(messages.recipientId, userId), eq(messages.isRead, false))
       );
 
-    return unreadCount;
+    return result?.count || 0;
   }
 
   private static mapToMessage(message: any): Message {
