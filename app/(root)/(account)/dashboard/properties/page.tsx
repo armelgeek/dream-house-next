@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
-import { PropertyCard } from '@/features/properties/components/molecules/property-card';
+import { PropertyListItem } from '@/features/properties/components/molecules/property-list-item';
 import { PropertyStatusSelector } from '@/features/properties/components/atoms/property-status-selector';
 import type { Property, PropertyWithOwner, PropertyStatus } from '@/features/properties/config/property.schema';
 import { toast } from 'sonner';
@@ -137,22 +137,18 @@ export default function PropertiesPage() {
               </div>
             )}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="space-y-4">
               {properties.map((property) => (
                 <div key={property.id} className="relative">
-                  <PropertyCard property={property as PropertyWithOwner} />
+                  <PropertyListItem property={property as PropertyWithOwner} />
                   
-                  {/* Status Selector - positioned at the bottom left of the card */}
-                  <div className="absolute bottom-4 left-4">
+                  {/* Action buttons - positioned at the top right */}
+                  <div className="absolute top-4 right-4 flex space-x-2">
                     <PropertyStatusSelector
                       propertyId={property.id}
                       currentStatus={property.status}
                       onStatusChange={(newStatus) => handleStatusChange(property.id, newStatus)}
                     />
-                  </div>
-                  
-                  {/* Action buttons - positioned at the top right */}
-                  <div className="absolute top-2 right-2 flex space-x-2">
                     <Link
                       href={`/dashboard/properties/${property.id}/edit`}
                       className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700 transition"

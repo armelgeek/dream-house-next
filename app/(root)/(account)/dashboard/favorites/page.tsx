@@ -47,6 +47,7 @@ export default function FavoritesPage() {
             <PropertyList 
               properties={favorites} 
               loading={loading}
+              viewMode="list"
             />
           </>
         )}
