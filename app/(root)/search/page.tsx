@@ -90,9 +90,34 @@ export default function SearchPage() {
   return (
     <div className="py-8 px-6 md:px-12">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Search Properties</h1>
-          <p className="text-gray-600">Find your perfect home with our advanced search filters</p>
+        {/* Enhanced Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Search Properties
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-8">
+            Find your perfect home with our advanced search filters. Browse thousands of properties for sale and rent.
+          </p>
+          
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="text-2xl font-bold text-blue-600">1000+</div>
+              <div className="text-sm text-gray-600">Available Properties</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="text-2xl font-bold text-green-600">50+</div>
+              <div className="text-sm text-gray-600">Cities Covered</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="text-2xl font-bold text-purple-600">24/7</div>
+              <div className="text-sm text-gray-600">Support Available</div>
+            </div>
+            <div className="bg-white p-4 rounded-lg shadow-sm">
+              <div className="text-2xl font-bold text-orange-600">100%</div>
+              <div className="text-sm text-gray-600">Verified Listings</div>
+            </div>
+          </div>
         </div>
 
         {/* Search Form */}
