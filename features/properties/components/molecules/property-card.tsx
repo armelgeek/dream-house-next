@@ -32,7 +32,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
             images={property.images}
             title={property.title}
             variant="grid"
-            className="h-48"
+            maxHeight="h-48"
           />
           <div className="absolute top-2 left-2 flex gap-2">
             <PropertyTypeBadge type={property.type} />

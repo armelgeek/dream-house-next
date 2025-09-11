@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 import { MessageNotificationEmail } from '../components/email-templates/message-notification';
 
 export class MessageEmailService {
-  private static transporter = nodemailer.createTransporter({
+  private static transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
     secure: false,
@@ -34,7 +34,7 @@ export class MessageEmailService {
     try {
       const dashboardUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/messages`;
       
-      const emailHtml = render(
+      const emailHtml = await render(
         MessageNotificationEmail({
           recipientName,
           senderName,

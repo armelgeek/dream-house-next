@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { PropertyTypeBadge } from '../atoms/property-type-badge';
 import { TransactionTypeBadge } from '../atoms/transaction-type-badge';
 import { FavoriteButton } from '@/features/favorites/components/atoms/favorite-button';
+import { PropertyImageGallery } from './property-image-gallery';
 import type { PropertyWithOwner } from '../../config/property.schema';
 
 interface PropertyListItemProps {
@@ -29,11 +30,12 @@ export const PropertyListItem: React.FC<PropertyListItemProps> = ({
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Image */}
         <Link href={`/properties/${property.id}`} className="flex-shrink-0">
-          <div className="relative w-full sm:w-64 h-48 sm:h-32 rounded-lg overflow-hidden">
-            <img
-              src={primaryImage}
-              alt={property.title}
-              className="w-full h-full object-cover"
+          <div className="w-full sm:w-64">
+            <PropertyImageGallery 
+              images={property.images}
+              title={property.title}
+              variant="carousel"
+              maxHeight="h-48 sm:h-32"
             />
             <div className="absolute top-2 left-2 flex gap-1">
               <PropertyTypeBadge type={property.type} />
