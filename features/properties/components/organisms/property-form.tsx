@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form } from '@/components/ui/form';
 import { toast } from 'sonner';
 import axios from 'axios';
 
@@ -89,7 +90,8 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleFormSubmit} className="space-y-6">
+          <Form {...form}>
+            <form onSubmit={handleFormSubmit} className="space-y-6">
             {/* Basic Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold">Basic Information</h3>
@@ -363,6 +365,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
               </Button>
             </div>
           </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
