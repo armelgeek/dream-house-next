@@ -82,7 +82,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({
   const watchedTransactionType = watch('transactionType');
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="mx-auto px-6 max-w-4xl">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl font-bold">

@@ -22,7 +22,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="s mx-auto px-6 max-w-4xl">
         <Card>
           <CardContent className="p-8">
             <div className="animate-pulse space-y-4">
@@ -41,7 +41,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
   if (error) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="mx-auto px-6 max-w-4xl">
         <Card>
           <CardContent className="p-8 text-center">
             <div className="text-red-500 text-4xl mb-4">❌</div>
@@ -61,7 +61,7 @@ export default function EditPropertyPage({ params }: EditPropertyPageProps) {
 
   if (!property) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="mx-auto px-6 max-w-4xl">
         <Card>
           <CardContent className="p-8 text-center">
             <div className="text-gray-400 text-4xl mb-4">🏠</div>
