@@ -2,6 +2,7 @@ import { db } from '@/drizzle/db';
 import { messages, users, properties } from '@/drizzle/schema';
 import { eq, and, or, desc, asc, count, sql } from 'drizzle-orm';
 import type { CreateMessage, Message, Conversation } from '../config/message.schema';
+import { MessageEmailService } from '../utils/email.service';
 
 export class MessageService {
   static async create(data: CreateMessage & { senderId: string }): Promise<Message> {
@@ -9,6 +10,52 @@ export class MessageService {
       .insert(messages)
       .values(data)
       .returning();
+
+    // Send email notification to the recipient
+    try {
+      const [recipient] = await db
+        .select({
+          email: users.email,
+          name: users.name,
+        })
+        .from(users)
+        .where(eq(users.id, data.recipientId))
+        .limit(1);
+
+      const [sender] = await db
+        .select({
+          name: users.name,
+        })
+        .from(users)
+        .where(eq(users.id, data.senderId))
+        .limit(1);
+
+      let propertyTitle: string | undefined;
+      if (data.propertyId) {
+        const [property] = await db
+          .select({
+            title: properties.title,
+          })
+          .from(properties)
+          .where(eq(properties.id, data.propertyId))
+          .limit(1);
+        
+        propertyTitle = property?.title;
+      }
+
+      if (recipient && sender) {
+        await MessageEmailService.sendMessageNotification({
+          recipientEmail: recipient.email,
+          recipientName: recipient.name || 'User',
+          senderName: sender.name || 'Someone',
+          message: data.content,
+          propertyTitle,
+        });
+      }
+    } catch (error) {
+      console.error('Failed to send email notification for message:', error);
+      // Don't fail the message creation if email fails
+    }
 
     return this.mapToMessage(message);
   }

@@ -9,6 +9,7 @@ import { AppLogo } from "@/shared/components/molecules/layout/app-logo";
 import AppFooter from "@/shared/components/molecules/layout/app-footer";
 import AppNav from "@/shared/components/molecules/layout/app-nav";
 import { UserAvatar } from "@/shared/components/molecules/user-avatar";
+import { MessageNotification } from "@/features/messaging/components/atoms/message-notification";
 
 interface RootLayoutProps {
   readonly children: React.ReactNode;
@@ -38,7 +39,9 @@ export default async function BaseLayout({ children }: RootLayoutProps) {
               <div className="flex items-center gap-1 sm:gap-3">
                 
                 {session ? (
-                  <div className="group relative">
+                  <>
+                    <MessageNotification />
+                    <div className="group relative">
                     <UserAvatar
                       isAnonymous={session.user.isAnonymous ?? false}
                       user={{
@@ -62,6 +65,7 @@ export default async function BaseLayout({ children }: RootLayoutProps) {
                       </div>
                     </div>
                   </div>
+                  </>
                 ) : (
                   <div className="flex items-center gap-2">
                     <Link
