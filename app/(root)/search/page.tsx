@@ -120,113 +120,123 @@ export default function SearchPage() {
           </div>
         </div>
 
-        {/* Search Form */}
-        <PropertySearchForm
-          onSearch={handleSearch}
-          initialFilters={filters}
-          className="mb-8"
-        />
-
-        {/* Results Header */}
-        {pagination && (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-            <p className="text-gray-600">
-              Showing {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} properties
-            </p>
-            
-            <div className="flex items-center gap-4">
-              {/* View Toggle */}
-              <ViewToggle viewMode={viewMode} onViewChange={handleViewChange} />
-              
-              {/* Sort Dropdown - Hide in map view */}
-              {viewMode !== 'map' && (
-                <div className="flex items-center space-x-2">
-                  <label className="text-sm text-gray-600">Sort by:</label>
-                  <select
-                    value={`${filters.sortBy}-${filters.sortOrder}`}
-                    onChange={(e) => {
-                      const [sortBy, sortOrder] = e.target.value.split('-');
-                      setFilters({ 
-                        ...filters, 
-                        sortBy: sortBy as 'price' | 'size' | 'created_at' | 'view_count', 
-                        sortOrder: sortOrder as 'asc' | 'desc', 
-                        page: 1 
-                      });
-                    }}
-                    className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-black focus:border-black"
-                  >
-                    <option value="created_at-desc">Newest First</option>
-                    <option value="created_at-asc">Oldest First</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="size-desc">Size: Largest First</option>
-                    <option value="view_count-desc">Most Popular</option>
-                  </select>
-                </div>
-              )}
+        {/* Main Content Layout with Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Search Form Sidebar */}
+          <aside className="lg:col-span-1">
+            <div className="sticky top-4">
+              <PropertySearchForm
+                onSearch={handleSearch}
+                initialFilters={filters}
+                className="mb-8 lg:mb-0"
+              />
             </div>
-          </div>
-        )}
+          </aside>
 
-        {/* Error State */}
-        {error && (
-          <div className="text-center py-12">
-            <div className="text-red-500 text-4xl mb-4">❌</div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Search Error</h3>
-            <p className="text-gray-600">{error}</p>
-          </div>
-        )}
+          {/* Main Content Area */}
+          <main className="lg:col-span-3">
+            {/* Results Header */}
+            {pagination && (
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <p className="text-gray-600">
+                  Showing {((pagination.page - 1) * pagination.limit) + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} properties
+                </p>
+                
+                <div className="flex items-center gap-4">
+                  {/* View Toggle */}
+                  <ViewToggle viewMode={viewMode} onViewChange={handleViewChange} />
+                  
+                  {/* Sort Dropdown - Hide in map view */}
+                  {viewMode !== 'map' && (
+                    <div className="flex items-center space-x-2">
+                      <label className="text-sm text-gray-600">Sort by:</label>
+                      <select
+                        value={`${filters.sortBy}-${filters.sortOrder}`}
+                        onChange={(e) => {
+                          const [sortBy, sortOrder] = e.target.value.split('-');
+                          setFilters({ 
+                            ...filters, 
+                            sortBy: sortBy as 'price' | 'size' | 'created_at' | 'view_count', 
+                            sortOrder: sortOrder as 'asc' | 'desc', 
+                            page: 1 
+                          });
+                        }}
+                        className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-black focus:border-black"
+                      >
+                        <option value="created_at-desc">Newest First</option>
+                        <option value="created_at-asc">Oldest First</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="size-desc">Size: Largest First</option>
+                        <option value="view_count-desc">Most Popular</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
-        {/* Results */}
-        {!error && (
-          <PropertyList 
-            properties={properties} 
-            loading={loading}
-            viewMode={viewMode}
-            className="mb-8"
-          />
-        )}
+            {/* Error State */}
+            {error && (
+              <div className="text-center py-12">
+                <div className="text-red-500 text-4xl mb-4">❌</div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Search Error</h3>
+                <p className="text-gray-600">{error}</p>
+              </div>
+            )}
 
-        {/* Pagination - Hide in map view */}
-        {viewMode !== 'map' && pagination && pagination.totalPages > 1 && (
-          <div className="flex justify-center items-center space-x-2">
-            <button
-              onClick={() => handlePageChange(pagination.page - 1)}
-              disabled={!pagination.hasPrev}
-              className="px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              Previous
-            </button>
-            
-            {/* Page numbers */}
-            {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
-              const pageNum = Math.max(1, pagination.page - 2) + i;
-              if (pageNum > pagination.totalPages) return null;
-              
-              return (
+            {/* Results */}
+            {!error && (
+              <PropertyList 
+                properties={properties} 
+                loading={loading}
+                viewMode={viewMode}
+                className="mb-8"
+              />
+            )}
+
+            {/* Pagination - Hide in map view */}
+            {viewMode !== 'map' && pagination && pagination.totalPages > 1 && (
+              <div className="flex justify-center items-center space-x-2">
                 <button
-                  key={pageNum}
-                  onClick={() => handlePageChange(pageNum)}
-                  className={`px-3 py-2 border rounded-md ${
-                    pageNum === pagination.page
-                      ? 'bg-black text-white border-black'
-                      : 'border-gray-300 hover:bg-gray-50'
-                  }`}
+                  onClick={() => handlePageChange(pagination.page - 1)}
+                  disabled={!pagination.hasPrev}
+                  className="px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
                 >
-                  {pageNum}
+                  Previous
                 </button>
-              );
-            })}
-            
-            <button
-              onClick={() => handlePageChange(pagination.page + 1)}
-              disabled={!pagination.hasNext}
-              className="px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-            >
-              Next
-            </button>
-          </div>
-        )}
+                
+                {/* Page numbers */}
+                {Array.from({ length: Math.min(5, pagination.totalPages) }, (_, i) => {
+                  const pageNum = Math.max(1, pagination.page - 2) + i;
+                  if (pageNum > pagination.totalPages) return null;
+                  
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => handlePageChange(pageNum)}
+                      className={`px-3 py-2 border rounded-md ${
+                        pageNum === pagination.page
+                          ? 'bg-black text-white border-black'
+                          : 'border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+                
+                <button
+                  onClick={() => handlePageChange(pagination.page + 1)}
+                  disabled={!pagination.hasNext}
+                  className="px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </main>
+        </div>
       </div>
     </div>
   );
