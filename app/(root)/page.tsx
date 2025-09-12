@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <>
-      <Hero showSearch={false} />
+      <Hero showSearch={true} />
       
       {/* Latest Properties Section */}
       <section className="py-16 px-6 md:px-12">
